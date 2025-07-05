@@ -204,33 +204,11 @@ Check the SOL balance of the agent's own wallet (hardcoded).
 }
 ```
 
-## 📊 Deployment Proof
-
-### ✅ Successful Deployment on Nosana
-
-**Job ID**: `Be7MStVeTM5nzQ7Nk5aidNRtwHQm4Pq3No9bKPD4vg2F`
-
-**Dashboard Link**: [View on Nosana Dashboard](https://dashboard.nosana.com/jobs/Be7MStVeTM5nzQ7Nk5aidNRtwHQm4Pq3No9bKPD4vg2F)
-
-#### CLI Deployment Success
-![Nosana CLI Deployment Success](./assets/nosana-cli-deployment-success.png)
-*Screenshot showing successful deployment message from Nosana CLI*
-
-#### Dashboard Status
-![Nosana Dashboard Running Status](./assets/nosana-dashboard-running.png)
-*Nosana Dashboard showing the AI agent running successfully*
-
-The agent is currently running successfully on the Nosana decentralized GPU network, providing:
-- ✅ High availability through distributed infrastructure
-- ✅ Cost-effective GPU computing resources
-- ✅ Decentralized execution environment
-- ✅ Seamless integration with Solana blockchain
-
 ## 🎥 Demo Video
 
 Check out our working video demo showcasing the agent's capabilities:
 
-[![Solana AI Agent Demo](./assets/demo-thumbnail.png)](./assets/demo-video.mp4)
+🔗 [Demo Video Link](https://x.com/bharathms443/status/1941435838015107423)
 
 **Demo Features:**
 - 💾 Saving wallet addresses with custom names
