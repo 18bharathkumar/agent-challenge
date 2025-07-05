@@ -70,8 +70,8 @@ It uses **Redis** for storing names and public keys and connects to Solana **Dev
 
 4. **Clone the repository**:
    ```bash
-   git clone <your-repo-url>
-   cd solana-ai-agent
+   git clone [<your-repo-url>](https://github.com/18bharathkumar/agent-challenge)
+   cd agent-challenge
    ```
 
 5. **Setup environment variables**:
