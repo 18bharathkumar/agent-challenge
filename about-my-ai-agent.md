@@ -11,11 +11,11 @@ This is an AI agent built for the **Nosana Agent Challenge**, deployed on the [@
 **Dashboard Link**: [View on Nosana Dashboard](https://dashboard.nosana.com/jobs/Be7MStVeTM5nzQ7Nk5aidNRtwHQm4Pq3No9bKPD4vg2F)
 
 #### CLI Deployment Success
-![Nosana CLI Deployment Success](./assets/nosana-cli-deployment-success.png)
+![Nosana CLI Deployment Success](./assets/cli.png)
 *Screenshot showing successful deployment message from Nosana CLI*
 
 #### Dashboard Status
-![Nosana Dashboard Running Status](./assets/nosana-dashboard-running.png)
+![Nosana Dashboard Running Status](./assets/dashboard.png)
 *Nosana Dashboard showing the AI agent running successfully*
 
 The agent is currently running successfully on the Nosana decentralized GPU network, providing:
