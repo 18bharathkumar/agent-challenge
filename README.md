@@ -69,4 +69,7 @@ docker run -p 8080:8080 --env-file .env yourusername/solana-ai-agent:latest
 
 ---
 
-**#Solana #AI #Nosana #Mastra #Web3**
+**Built with ❤️🤍 for the Solana ecosystem**
+
+*Making blockchain development accessible through AI automation*
+
