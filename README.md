@@ -11,7 +11,11 @@
 
 **Transform complex blockchain operations into simple conversations**
 
-[🎥 Watch Demo](#-demo)!https://x.com/ajeyakumara07/status/1942271428436582585
+<blockquote class="twitter-tweet">
+  <a href="https://x.com/ajeyakumara07/status/1942271428436582585"></a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 
 </div>---
 
