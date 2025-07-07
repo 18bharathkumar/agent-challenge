@@ -1,6 +1,7 @@
+<div align="center> 
 # 🌟 Solana AI Agent
 *Blockchain Development Through Intelligent Automation*
-
+</div>
 <div align="center">
 
 <img src="https://img.shields.io/badge/🚀_Solana_AI_Agent-Revolutionary_Blockchain_Automation-6366f1?style=for-the-badge&labelColor=1e1b4b" alt="Solana AI Agent Banner" />
