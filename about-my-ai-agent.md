@@ -14,8 +14,8 @@ This is an AI agent built for the **Nosana Agent Challenge**, deployed on the [@
 ![Ai Agent](./assets/agent.jpg)
 *Ai Agent running successfully on Nosana*
 
-#### Demo viedo 
-**Demo viedo**: [View on twitter](https://x.com/bharathms443/status/1942345034814349443)
+#### Demo Video 
+**Demo Video**: [View on twitter](https://x.com/bharathms443/status/1942345034814349443)
 
 
 #### CLI Deployment Success
