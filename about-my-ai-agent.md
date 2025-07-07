@@ -6,17 +6,28 @@ This is an AI agent built for the **Nosana Agent Challenge**, deployed on the [@
 
 ### ✅ Successful Deployment on Nosana
 
-**Job ID**: `Be7MStVeTM5nzQ7Nk5aidNRtwHQm4Pq3No9bKPD4vg2F`
+**Job ID**: `8s39AWPdTQkqghgywWQV4QwxKQGkK1umZCsaWEarxoy9`
 
-**Dashboard Link**: [View on Nosana Dashboard](https://dashboard.nosana.com/jobs/Be7MStVeTM5nzQ7Nk5aidNRtwHQm4Pq3No9bKPD4vg2F)
+**Dashboard Link**: [View on Nosana Dashboard](https://dashboard.nosana.com/jobs/8s39AWPdTQkqghgywWQV4QwxKQGkK1umZCsaWEarxoy9)
+
+#### AI Agent
+![Ai Agent](./assets/agent.jpg)
+*Ai Agent running successfully on Nosana*
+
+#### Demo viedo 
+**Demo viedo**: [View on twitter](https://x.com/bharathms443/status/1942345034814349443)
+
 
 #### CLI Deployment Success
 ![Nosana CLI Deployment Success](./assets/cli.png)
 *Screenshot showing successful deployment message from Nosana CLI*
 
 #### Dashboard Status
-![Nosana Dashboard Running Status](./assets/dashboard.png)
+![Nosana Dashboard Running Status](./assets/Dashboard.png)
 *Nosana Dashboard showing the AI agent running successfully*
+
+#### Job Resut 
+![job result](./assets/job_result.png)
 
 The agent is currently running successfully on the Nosana decentralized GPU network, providing:
 - ✅ High availability through distributed infrastructure
@@ -203,12 +214,6 @@ Check the SOL balance of the agent's own wallet (hardcoded).
   "balance": 2.45
 }
 ```
-
-## 🎥 Demo Video
-
-Check out our working video demo showcasing the agent's capabilities:
-
-🔗 [Demo Video Link](https://x.com/bharathms443/status/1941435838015107423)
 
 **Demo Features:**
 - 💾 Saving wallet addresses with custom names
