@@ -3,17 +3,23 @@
 
 <div align="center">
 
-![Solana AI Agent Banner](https://img.shields.io/badge/🚀_Solana_AI_Agent-Revolutionary_Blockchain_Automation-6366f1?style=for-the-badge&labelColor=1e1b4b)
+<img src="https://img.shields.io/badge/🚀_Solana_AI_Agent-Revolutionary_Blockchain_Automation-6366f1?style=for-the-badge&labelColor=1e1b4b" alt="Solana AI Agent Banner" />
 
-[![Built with Mastra](https://img.shields.io/badge/Built_with-Mastra-00d4ff?style=for-the-badge&logo=typescript&logoColor=white)](https://mastra.ai)
-[![Deployed on Nosana](https://img.shields.io/badge/Deployed_on-Nosana-00ff88?style=for-the-badge&logo=docker&logoColor=white)](https://nosana.io)
-[![Solana Blockchain](https://img.shields.io/badge/Blockchain-Solana-9945ff?style=for-the-badge&logo=solana&logoColor=white)](https://solana.com)
+<a href="https://mastra.ai"><img src="https://img.shields.io/badge/Built_with-Mastra-00d4ff?style=for-the-badge&logo=typescript&logoColor=white" alt="Built with Mastra" /></a>
+<a href="https://nosana.io"><img src="https://img.shields.io/badge/Deployed_on-Nosana-00ff88?style=for-the-badge&logo=docker&logoColor=white" alt="Deployed on Nosana" /></a>
+<a href="https://solana.com"><img src="https://img.shields.io/badge/Blockchain-Solana-9945ff?style=for-the-badge&logo=solana&logoColor=white" alt="Solana Blockchain" /></a>
 
-**Transform complex blockchain operations into simple conversations**
+<br/>
 
----
+<strong>Transform complex blockchain operations into simple conversations</strong>
 
-[![🎥 Watch Demo Video](https://img.shields.io/badge/🎥%20Watch%20Demo%20Video-Click%20Here-orange?style=for-the-badge)](https://x.com/ajeyakumara07/status/1942319063415546197)
+<br/>
+
+<a href="https://x.com/ajeyakumara07/status/1942319063415546197">
+  <img src="https://img.shields.io/badge/🎥%20Watch%20Demo%20Video-Click%20Here-orange?style=for-the-badge" alt="Watch Demo Video" />
+</a>
+
+</div>
 
 ---
 
@@ -30,19 +36,12 @@
 
 ## Features
 
-| Token Operations         | Wallet Management         |
-|-------------------------|--------------------------|
-| Create SPL tokens       | Smart airdrops           |
-| Mint & burn supply      | Balance monitoring       |
-| Token analytics         | Transaction history      |
-| Metadata management     | Wallet validation        |
-
-| Blockchain Explorer     | AI-Powered Automation    |
-|------------------------|--------------------------|
-| Real-time tracking      | Smart contract calls     |
-| Account analysis        | Batch operations         |
-| Program monitoring      | Risk assessment          |
-| Network stats           | Performance tips         |
+| Token Operations      | Wallet Management    | Blockchain Explorer   | AI-Powered Automation |
+|----------------------|---------------------|----------------------|-----------------------|
+| Create SPL tokens    | Smart airdrops      | Real-time tracking   | Smart contract calls  |
+| Mint & burn supply   | Balance monitoring  | Account analysis     | Batch operations      |
+| Token analytics      | Transaction history | Program monitoring   | Risk assessment       |
+| Metadata management  | Wallet validation   | Network stats        | Performance tips      |
 
 ---
 
@@ -199,11 +198,15 @@ pnpm run audit    # Security audit
 
 ### Ready to Transform Blockchain Development?
 
-[🚀 Deploy Now](https://dashboard.nosana.com/deploy) • [📖 Read Docs](https://docs.nosana.io) • [💬 Join Community](https://nosana.com/discord)
+<a href="https://dashboard.nosana.com/deploy"><img src="https://img.shields.io/badge/🚀_Deploy_Now-blue?style=for-the-badge" alt="Deploy Now" /></a>
+<a href="https://docs.nosana.io"><img src="https://img.shields.io/badge/📖_Read_Docs-9cf?style=for-the-badge" alt="Read Docs" /></a>
+<a href="https://nosana.com/discord"><img src="https://img.shields.io/badge/💬_Join_Community-5865F2?style=for-the-badge" alt="Join Community" /></a>
+
+<br/>
 
 **Built with ❤️ by the Solana community**
 
-![Footer](https://img.shields.io/badge/🌟_Star_if_you_like_it!-yellow?style=for-the-badge)
+<img src="https://img.shields.io/badge/🌟_Star_if_you_like_it!-yellow?style=for-the-badge" alt="Star if you like it!" />
 
 </div>
 
