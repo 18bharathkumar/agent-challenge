@@ -5,7 +5,7 @@ import { LibSQLStore } from "@mastra/libsql";
 import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool } from "./tools";
 import { instructions } from "./instruction";
 
-const name = "Solana-SPL-Agent";
+const name = "Solana-Agent";
 
 const memory = new Memory({
     storage: new LibSQLStore({
@@ -14,16 +14,16 @@ const memory = new Memory({
 });
 
 
-export const SolanaSPLAgent = new Agent({
+export const SolanaAgent = new Agent({
 	name,
 	instructions,
 	model,
 	tools: { 
-            // GetSolBalance:getSolBalanceTool,
-            // CreateToken:createTokenTool,
+            GetSolBalance:getSolBalanceTool,
+            CreateToken:createTokenTool,
             GetAccountInfo:getAccountInfoTool,
-            // GetTransactionInfo:getTransactionTool,
-            // GetTokenSupply:getTokenSupplyTool
+            GetTransactionInfo:getTransactionTool,
+            GetTokenSupply:getTokenSupplyTool
        },
       memory
 });
