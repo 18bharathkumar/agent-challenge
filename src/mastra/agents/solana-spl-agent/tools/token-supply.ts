@@ -118,7 +118,7 @@ async function getTokenSupplyHttp(
   const { mintAddress, options = {} } = params;
   
   try {
-    const rpcUrl = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
+    const rpcUrl = process.env.SOLANA_RPC_URL_HELIUS  || 'https://api.mainnet-beta.solana.com';
     
     const requestBody = {
       jsonrpc: '2.0',

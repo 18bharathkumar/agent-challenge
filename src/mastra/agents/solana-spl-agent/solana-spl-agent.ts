@@ -2,7 +2,7 @@ import { Agent } from "@mastra/core/agent";
 import { model } from "../../config";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore } from "@mastra/libsql";
-import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool ,airdropSOLTool} from "./tools";
+import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool } from "./tools";
 import { instructions } from "./instruction";
 
 const name = "Solana-SPL-Agent";
@@ -19,12 +19,11 @@ export const SolanaSPLAgent = new Agent({
 	instructions,
 	model,
 	tools: { 
-            GetSolBalance:getSolBalanceTool,
-            AirdropSOL:airdropSOLTool,
-            CreateToken:createTokenTool,
+            // GetSolBalance:getSolBalanceTool,
+            // CreateToken:createTokenTool,
             GetAccountInfo:getAccountInfoTool,
-            GetTransactionInfo:getTransactionTool,
-            GetTokenSupply:getTokenSupplyTool
+            // GetTransactionInfo:getTransactionTool,
+            // GetTokenSupply:getTokenSupplyTool
        },
       memory
 });

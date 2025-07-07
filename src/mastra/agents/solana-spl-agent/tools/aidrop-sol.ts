@@ -31,7 +31,7 @@ execute: async (args: any): Promise<AirdropSOLOutput> => {
         throw new Error("Amount must be a positive number");
     }
     
-    const rpcUrl = process.env.SOLANA_RPC_URL;
+    const rpcUrl = "https://api.devnet.solana.com";
     if (!rpcUrl) {
     throw new Error("Missing SOLANA_RPC_URL in environment variables");
     }
