@@ -6,8 +6,9 @@ export const getAccountInfoTool = createTool({
   id: "getAccountInfo",
   description: "Get account information for a Solana account using wallet address or program account address",
   inputSchema: z.object({
-    accountAddress: z.string().describe("The base-58 encoded public key of the account to get information for"),
-    rpcUrl: z.string().optional().describe("Custom RPC URL (default: mainnet Helius RPC)"),
+    accountAddress: z
+      .string()
+      .describe("The base-58 encoded public key of the account to get information for"),
   }),
   outputSchema: z.object({
     success: z.literal(true),
@@ -44,10 +45,10 @@ export const getAccountInfoTool = createTool({
       }),
     }),
   }),
-  execute: async (args: any) => {
-    const input = args.context;
+  execute: async (context, _options) => {
+    const input = context.context;
     const accountAddress = input.accountAddress;
-    const rpcUrl = input.rpcUrl || process.env.SOLANA_RPC_URL_HELIUS || "https://api.mainnet-beta.solana.com";
+    const rpcUrl = process.env.SOLANA_RPC_URL_HELIUS || "https://api.mainnet-beta.solana.com";
 
     try {
       if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(accountAddress)) {
@@ -67,7 +68,7 @@ export const getAccountInfoTool = createTool({
       const owner = info.owner.toBase58();
       const executable = info.executable;
       const rentEpoch = info.rentEpoch || 0;
-      const dataSize = info.data.length;
+      const dataSize = info.data?.length ?? 0;
 
       const isSystemAccount = owner === "11111111111111111111111111111111";
       const isTokenAccount = owner === "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
@@ -81,8 +82,8 @@ export const getAccountInfoTool = createTool({
 
       const tokenInfo = isTokenAccount
         ? {
-            mint: "Unknown (requires SPL token library)",
-            owner: "Unknown (requires SPL token library)",
+            mint: "Unknown", // If jsonParsed is not used
+            owner: "Unknown",
             balance: 0,
             decimals: 9,
           }
@@ -122,7 +123,9 @@ export const getAccountInfoTool = createTool({
       };
     } catch (err) {
       console.error("Error fetching account info:", err);
-      throw new Error(`Failed to fetch account info: ${err instanceof Error ? err.message : "Unknown error"}`);
+      throw new Error(
+        `Failed to fetch account info: ${err instanceof Error ? err.message : "Unknown error"}`
+      );
     }
   },
 });
