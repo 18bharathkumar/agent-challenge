@@ -21,7 +21,8 @@
 - Interact with Solana via code terminal and explorer
 - Natural language blockchain operations
 - Real-time analytics and batch smart contract operations
-
+- Get the All Associated Token Account from the user's public key
+- Get the Top 10 Token Holdings for a Token (mint address) 
 ---
 
 ## Quick Start
