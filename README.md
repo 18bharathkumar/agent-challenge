@@ -4,25 +4,25 @@
 
 <div align="center">
 
-<a href="https://x.com/ajeyakumara07/status/1942319063415546197">
+<a href="https://x.com/ajeyakumara07/status/1942493271474987168">
   <img src="https://img.shields.io/badge/🎥%20Watch%20Demo%20Video-Click%20Here-orange?style=for-the-badge" alt="Watch Demo Video" />
 </a>
 
 </div>
+
 
 ---
 
 ## Features
 
 - Create SPL tokens and mint initial supply
-- Airdrop SOL and SPL tokens to wallets
-- Analyze token supply and account details by mint address
-- Fetch transaction details and account balances
-- Interact with Solana via code terminal and explorer
-- Natural language blockchain operations
+- Get the Solana Balanace by wallet address
+- Analyze  account details by Wallet address
+- Analyze your transaction with complete infomation by signature 
+- Analyze the Token supply information of spl tokens by mint address of token 
+- Analyze the Token Distribution by getting top 10 token holders account information
 - Real-time analytics and batch smart contract operations
-
----
+- Get the All Associated Token Account for a wallet addres (pubkey)
 
 ## Quick Start
 
@@ -61,7 +61,7 @@ docker run -p 8080:8080 --env-file .env yourusername/solana-ai-agent:latest
 ---
 
 ## Links
-
+-  [Nosana Deployed Dashboard URL](https://dashboard.nosana.com/jobs/59BAGAjyeXXppXQL48hdSa1AaNE5h2943DQ5FmRJMZWH)
 - [Demo Video](https://x.com/ajeyakumara07/status/1942319063415546197)
 - [Mastra Docs](https://mastra.ai/docs)
 - [Nosana Docs](https://docs.nosana.io)
