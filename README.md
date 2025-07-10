@@ -1,4 +1,4 @@
-# 🌟 Solana AI Agent
+# 🌟 Nosana Solana AI Agent
 
 *Conversational automation for Solana blockchain tasks.*
 
