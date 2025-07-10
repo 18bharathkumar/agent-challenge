@@ -2,7 +2,7 @@ import { Agent } from "@mastra/core/agent";
 import { model } from "../../config";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore } from "@mastra/libsql";
-import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool , getTokenAccountsByOwnerTool, getTokenLargestAccountsTool } from "./tools";
+import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool , getTokenAccountsByOwnerTool, getTokenLargestAccountsTool ,deployToNosanaTool } from "./tools";
 import { instructions } from "./instruction";
 
 const name = "Solana-Agent";
@@ -20,12 +20,13 @@ export const SolanaAgent = new Agent({
 	model,
 	tools: { 
             GetSolBalance:getSolBalanceTool,
-            CreateToken:createTokenTool,
-            GetAccountInfo:getAccountInfoTool,
-            GetTransactionInfo:getTransactionTool,
-            GetTokenSupply:getTokenSupplyTool,
-            GetTokenAccountsByOwner:getTokenAccountsByOwnerTool,
-            GetTokenLargetAccounts:getTokenLargestAccountsTool
+            // CreateToken:createTokenTool,
+            // GetAccountInfo:getAccountInfoTool,
+            // GetTransactionInfo:getTransactionTool,
+            // GetTokenSupply:getTokenSupplyTool,
+            // GetTokenAccountsByOwner:getTokenAccountsByOwnerTool,
+            // GetTokenLargetAccounts:getTokenLargestAccountsTool,
+            DeployToNosanaNetwork:deployToNosanaTool
        },
       memory
 });

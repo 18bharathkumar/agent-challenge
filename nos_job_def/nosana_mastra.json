@@ -9,11 +9,7 @@
           {
             "port": 8080
           }
-<<<<<<< HEAD
         ]  
-=======
-        ]
->>>>>>> 47e9df0 (fixed-by-ajey35)
       },
       "type": "container/run"
     }

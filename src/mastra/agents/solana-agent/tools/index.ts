@@ -5,6 +5,7 @@ import { getTransactionTool } from "./get-transaction";
 import { getTokenSupplyTool } from "./token-supply";
 import { getTokenAccountsByOwnerTool } from "./get-token-accounts-by-owner";
 import { getTokenLargestAccountsTool } from "./get-token-largest-accounts";
+import { deployToNosanaTool } from "./deploy-to-nosana";
 
 export {
     getSolBalanceTool,
@@ -13,5 +14,6 @@ export {
     getTransactionTool,
     getTokenSupplyTool,
     getTokenAccountsByOwnerTool,
-    getTokenLargestAccountsTool
+    getTokenLargestAccountsTool,
+    deployToNosanaTool
 }
