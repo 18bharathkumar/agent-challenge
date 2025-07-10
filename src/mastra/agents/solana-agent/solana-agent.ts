@@ -2,10 +2,10 @@ import { Agent } from "@mastra/core/agent";
 import { model } from "../../config";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore } from "@mastra/libsql";
-import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool , getTokenAccountsByOwnerTool, getTokenLargestAccountsTool ,deployToNosanaTool } from "./tools";
+import { getSolBalanceTool , getAccountInfoTool , getTokenSupplyTool ,getTransactionTool ,createTokenTool , getTokenAccountsByOwnerTool, getTokenLargestAccountsTool ,deployToNosanaTool , getJobInfoTool , getJobRunsTool , getRunInfoTool , getMarketInfoTool , listAllJobsTool} from "./tools";
 import { instructions } from "./instruction";
 
-const name = "Solana-Agent";
+const name = "Solana-Nosana-Agent";
 
 const memory = new Memory({
     storage: new LibSQLStore({
@@ -14,19 +14,24 @@ const memory = new Memory({
 });
 
 
-export const SolanaAgent = new Agent({
+export const SolanaNosanaAgent = new Agent({
 	name,
 	instructions,
 	model,
 	tools: { 
             GetSolBalance:getSolBalanceTool,
-            // CreateToken:createTokenTool,
-            // GetAccountInfo:getAccountInfoTool,
-            // GetTransactionInfo:getTransactionTool,
-            // GetTokenSupply:getTokenSupplyTool,
-            // GetTokenAccountsByOwner:getTokenAccountsByOwnerTool,
-            // GetTokenLargetAccounts:getTokenLargestAccountsTool,
-            DeployToNosanaNetwork:deployToNosanaTool
+            CreateToken:createTokenTool,
+            GetAccountInfo:getAccountInfoTool,
+            GetTransactionInfo:getTransactionTool,
+            GetTokenSupply:getTokenSupplyTool,
+            GetTokenAccountsByOwner:getTokenAccountsByOwnerTool,
+            GetTokenLargetAccounts:getTokenLargestAccountsTool,
+            GetJobInfo:getJobInfoTool,
+            DeployToNosanaNetwork:deployToNosanaTool,
+            GetAllJobRuns:getJobRunsTool,
+            GetRunInfo:getRunInfoTool,
+            GetMarketInfo:getMarketInfoTool,
+            ListAllJobs:listAllJobsTool
        },
       memory
 });

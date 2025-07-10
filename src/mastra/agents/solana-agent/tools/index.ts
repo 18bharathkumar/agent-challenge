@@ -6,6 +6,11 @@ import { getTokenSupplyTool } from "./token-supply";
 import { getTokenAccountsByOwnerTool } from "./get-token-accounts-by-owner";
 import { getTokenLargestAccountsTool } from "./get-token-largest-accounts";
 import { deployToNosanaTool } from "./deploy-to-nosana";
+import { getJobInfoTool } from "./get-job-info";
+import { getJobRunsTool } from "./get-job-runs";
+import { getRunInfoTool } from "./get-run-info";
+import { getMarketInfoTool } from "./get-market-info";
+import { listAllJobsTool } from "./list-all-jobs";
 
 export {
     getSolBalanceTool,
@@ -15,5 +20,10 @@ export {
     getTokenSupplyTool,
     getTokenAccountsByOwnerTool,
     getTokenLargestAccountsTool,
-    deployToNosanaTool
+    deployToNosanaTool,
+    getJobInfoTool,
+    getJobRunsTool,
+    getRunInfoTool,
+    getMarketInfoTool,
+    listAllJobsTool
 }

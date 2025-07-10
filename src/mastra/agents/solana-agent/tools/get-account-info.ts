@@ -43,6 +43,7 @@ export const getAccountInfoTool = createTool({
         securityScore: z.number(),
         warnings: z.array(z.string()),
       }),
+      explorerUrl: z.string().optional(),
     }),
   }),
   execute: async (context, _options) => {
@@ -68,7 +69,10 @@ export const getAccountInfoTool = createTool({
       const owner = info.owner.toBase58();
       const executable = info.executable;
       const rentEpoch = info.rentEpoch || 0;
-      const dataSize = info.data?.length ?? 0;
+      const dataSize =
+        info.data && typeof info.data === "object" && "length" in info.data
+          ? (info.data as Buffer).length
+          : 0;
 
       const isSystemAccount = owner === "11111111111111111111111111111111";
       const isTokenAccount = owner === "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
@@ -102,6 +106,8 @@ export const getAccountInfoTool = createTool({
         warnings: [],
       };
 
+      const explorerUrl = `https://explorer.solana.com/address/${accountAddress}`;
+
       return {
         success: true as const,
         data: {
@@ -119,13 +125,15 @@ export const getAccountInfoTool = createTool({
           tokenInfo,
           programInfo,
           securityAssessment,
+          explorerUrl,
         },
       };
     } catch (err) {
       console.error("Error fetching account info:", err);
-      throw new Error(
-        `Failed to fetch account info: ${err instanceof Error ? err.message : "Unknown error"}`
-      );
+      return {
+        success: false,
+        error: `Failed to fetch account info: ${err instanceof Error ? err.message : "Unknown error"}`,
+      } as any;
     }
   },
 });
