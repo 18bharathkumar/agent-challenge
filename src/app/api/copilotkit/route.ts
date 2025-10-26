@@ -13,6 +13,8 @@ const serviceAdapter = new ExperimentalEmptyAdapter();
 // 2. Build a Next.js API route that handles the CopilotKit runtime requests.
 export const POST = async (req: NextRequest) => {
 
+  console.log("req",req);
+
   // 3. Create the CopilotRuntime instance and utilize the Mastra AG-UI
   //    integration to get the remote agents. Cache this for performance.
   const runtime = new CopilotRuntime({

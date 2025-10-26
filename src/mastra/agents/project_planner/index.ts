@@ -1,156 +1,259 @@
+/* -------------------- IMPORTS -------------------- */
 import "dotenv/config";
 import { Agent } from "@mastra/core/agent";
-import { z } from "zod";
 import { LibSQLStore } from "@mastra/libsql";
 import { Memory } from "@mastra/memory";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { fetchComponents } from "@/lib/agent-memory/redis";
+import { IotProjectSchema } from "@/lib/types/iot-project";
+import { z } from "zod";
 
-/* ---------------- ZOD SCHEMAS ---------------- */
+function generateJsonTemplate<T extends z.ZodTypeAny>(schema: T): any {
+  const type = schema._def.typeName;
 
-const PinSchema = z.object({
-  name: z.string(),
-  connected_to: z.string(),
-});
+  switch (type) {
+    case "ZodObject": {
+      const shape = schema._def.shape();
+      const obj: any = {};
+      for (const key in shape) {
+        obj[key] = generateJsonTemplate(shape[key]);
+      }
+      return obj;
+    }
+    case "ZodArray": {
+      const itemType = schema._def.type;
+      return [generateJsonTemplate(itemType)];
+    }
+    case "ZodString":
+      return "string";
+    case "ZodNumber":
+      return 0;
+    case "ZodBoolean":
+      return false;
+    case "ZodOptional":
+    case "ZodNullable":
+      return generateJsonTemplate(schema._def.innerType);
+    case "ZodUnion":
+      return generateJsonTemplate(schema._def.options[0]);
+    case "ZodEnum":
+      return schema._def.values[0];
+    default:
+      return null;
+  }
+}
 
-const ComponentSchema = z.object({
-  name: z.string(),
-  type: z.enum(["sensor", "output"]),
-  subtype: z.enum(["analog", "digital"]).optional(),
-  pins: z.array(PinSchema),
-  unit: z.string().optional(),
-});
+/* -------------------- THREAD ID -------------------- */
+const THREAD_ID = "component_knowledge_thread";
 
-const ProjectPlanSchema = z.object({
-  project_name: z.string(),
-  components: z.array(ComponentSchema),
-  automation_logic: z.array(z.string()),
-  manual_controls: z.array(z.string()),
-});
+/* -------------------- ESP32 PIN KNOWLEDGE -------------------- */
+const ESP32_KNOWLEDGE = `
+ESP32 GPIO Pin Rules:
 
-const TriggerSchema = z.object({
-  component: z.string(),
-  virtual_pin: z.string(),
-  value: z.enum(["HIGH", "LOW"]),
-  phrases: z.array(z.string()),
-});
+Safe Digital Pins: GPIO4, GPIO5, GPIO16, GPIO17, GPIO18, GPIO19, GPIO21, GPIO22, GPIO23
+Analog Sensor Pins (ADC1): GPIO32, GPIO33, GPIO34, GPIO35, GPIO36, GPIO39
+Never Use: GPIO6-GPIO11 (flash memory)
+Input Only: GPIO34-GPIO39 (cannot control LEDs/relays)
 
-const AgentStateIot = z.object({
-  generated_projects: z.array(ProjectPlanSchema).default([]),
-});
+Power Connections:
+- Sensors, LEDs, Buttons: 3.3V + GND
+- Relays: 5V + GND
+`;
 
-/* ---------------- MODEL SETUP (Gemini Provider) ---------------- */
+/* -------------------- AI MODEL SETUP -------------------- */
 const gemini = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY!,
 });
+const model = gemini("gemini-2.0-flash-exp");
 
-// Choose the Gemini model you want; "gemini-2.5-flash" is fast and good
-const model = gemini("gemini-2.5-flash");
+/* -------------------- AGENT MEMORY -------------------- */
+export const agentMemory = new Memory({
+  storage: new LibSQLStore({ url: "file::memory:" }),
+  options: {
+    workingMemory: {
+      enabled: true,
+      schema: generateJsonTemplate(IotProjectSchema),
+    },
+  },
+});
 
-/* ---------------- KNOWLEDGE SECTIONS ---------------- */
+/* -------------------- LOAD COMPONENTS INTO MEMORY -------------------- */
+export async function loadComponentsToAgent() {
+  const components = await fetchComponents();
+  if (!components || components.length === 0) {
+    console.warn("⚠️ No components fetched from Redis. Memory not updated.");
+    return;
+  }
 
-const SENSOR_KNOWLEDGE = `
-Common sensors:
-- Temperature Sensor (analog, unit: °C)
-- LDR (analog, unit: lux)
-- Moisture Sensor (analog, unit: %)
-- Ultrasonic Sensor (digital, unit: cm)
-- PIR Sensor (digital, boolean/motion)
+  await agentMemory.__experimental_updateWorkingMemoryVNext({
+    threadId: THREAD_ID,
+    workingMemory: JSON.stringify({ components }),
+    searchString: "IoT components knowledge",
+  });
+
+  console.log("✅ Component knowledge loaded into agent memory.");
+}
+
+const agentInstructions = `
+You are an IoT project planner for ESP32.
+
+RULES:
+1. Use components from memory
+2. Assign unique GPIO pins (use GPIO4, GPIO5, GPIO16-19 for digital, GPIO32-39 for analog)
+3. Include power connections (3.3V/5V + GND)
+4. High-power devices (bulbs, fans, motors) MUST use relay modules
+5. Outputs include BOTH sensor data AND device states
+
+MQTT Topics:
+- Control: {projectId}/device/{device_id} (receives 0 or 1)
+- Ack: {projectId}/device/{device_id}/ack (ESP32 confirms with 0 or 1)
+- Sensor: {projectId}/sensor/{sensor_name} (ESP32 publishes values)
+- Status: {projectId}/status/{device_id} (ESP32 publishes device state)
+
+================================
+EXAMPLE:
+================================
+
+User: "Control room light based on brightness"
+
+Output:
+{
+  "id": "smart_lighting",
+  "title": "Smart Room Lighting System",
+  "components": [
+    {
+      "id": "ldr_room",
+      "description": "LDR light sensor for room brightness detection",
+      "component_type": "sensor",
+      "subtype": "analog",
+      "pinConnection": [
+        { "name": "VCC", "connected_to": "3.3V" },
+        { "name": "GND", "connected_to": "GND" },
+        { "name": "AO", "connected_to": "GPIO34" }
+      ],
+      "unit": "lux"
+    },
+    {
+      "id": "relay_bulb",
+      "description": "1-Channel relay module controlling AC bulb",
+      "component_type": "output",
+      "subtype": "digital",
+      "pinConnection": [
+        { "name": "VCC", "connected_to": "5V" },
+        { "name": "GND", "connected_to": "GND" },
+        { "name": "IN", "connected_to": "GPIO16" },
+        { "name": "COM", "connected_to": "AC Live In" },
+        { "name": "NO", "connected_to": "Bulb Live" }
+      ]
+    },
+    {
+      "id": "bulb_main",
+      "description": "AC bulb (220V) for room lighting",
+      "component_type": "output",
+      "subtype": "digital",
+      "pinConnection": [
+        { "name": "Live", "connected_to": "Relay NO" },
+        { "name": "Neutral", "connected_to": "AC Neutral" }
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "bulb_on",
+      "phrases": ["turn on light", "lights on", "bulb on"],
+      "mqtt": "smart_lighting/device/relay_bulb",
+      "action": {
+        "component_id": "relay_bulb",
+        "pin": "GPIO16",
+        "value": 1
+      },
+      "ackTopic": "smart_lighting/device/relay_bulb/ack"
+    },
+    {
+      "id": "bulb_off",
+      "phrases": ["turn off light", "lights off", "bulb off"],
+      "mqtt": "smart_lighting/device/relay_bulb",
+      "action": {
+        "component_id": "relay_bulb",
+        "pin": "GPIO16",
+        "value": 0
+      },
+      "ackTopic": "smart_lighting/device/relay_bulb/ack"
+    }
+  ],
+  "automations": [
+    {
+      "id": "auto_light_dark",
+      "name": "Turn on bulb when room is dark",
+      "condition": "brightness < 500",
+      "actions": [
+        {
+          "component_id": "relay_bulb",
+          "pin": "GPIO16",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "auto_light_bright",
+      "name": "Turn off bulb when room is bright",
+      "condition": "brightness > 1000",
+      "actions": [
+        {
+          "component_id": "relay_bulb",
+          "pin": "GPIO16",
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "brightness",
+      "value": 0,
+      "publish_topic": "smart_lighting/sensor/brightness",
+      "component_id": "ldr_room"
+    },
+    {
+      "name": "bulb_state",
+      "value": 0,
+      "publish_topic": "smart_lighting/status/bulb_main",
+      "component_id": "bulb_main"
+    }
+  ]
+}
+
+================================
+
+WIRING DIAGRAM:
+- LDR Sensor → GPIO34 (analog reading)
+- Relay IN → GPIO16 (control signal)
+- Relay VCC → 5V, GND → GND
+- Relay COM → AC Live (from mains)
+- Relay NO → Bulb Live terminal
+- Bulb Neutral → AC Neutral (direct)
+
+KEY POINTS:
+- Outputs = sensor readings + device states
+- High-power devices (bulbs, fans, motors) use relay modules (5V power)
+- AC bulb connects through relay (COM → NO terminals)
+- Each output device gets: control topic + ack topic + status topic
+- Relay IN pin connects to GPIO (GPIO16 in example)
+- Use simple names and keep it minimal
+- GPIO format: GPIO5, GPIO16, GPIO34 (not D5, etc.)
+
+${ESP32_KNOWLEDGE}
 `;
 
-const OUTPUT_KNOWLEDGE = `
-Common output devices:
-- LED, Fan, Buzzer, Relay, Pump, Motor
-`;
 
-const PIN_KNOWLEDGE = `
-ESP32 Pinout Reference:
-- Digital GPIOs: D2 to D23
-- Analog Inputs: GPIO36, GPIO39, GPIO34, GPIO35
-- Power Pins: 3.3V, 5V, GND
-
-Typical Wiring Patterns:
-1. LED:
-   - Anode (+) → 220Ω Resistor → GPIO D2
-   - Cathode (–) → GND
-
-2. Relay Module:
-   - VCC → 5V
-   - GND → GND
-   - IN → GPIO (e.g., D5, D6, D7)
-   - COM → Common terminal for load
-   - NO → Normally Open (connects when relay active)
-   - NC → Normally Closed (disconnects when relay active)
-
-3. Fan or Motor Control:
-   - Controlled via Relay
-   - Load Live wire → Relay NO
-   - Relay COM → external power supply 
-`;
-
-const RELAY_KNOWLEDGE = `
-Relay Module Overview:
-- Used to control high-power AC or DC devices (fan, motor, lamp) using low-power ESP32 GPIO.
-- Pin details:
-  • VCC → 5V
-  • GND → GND
-  • IN → GPIO pin from ESP32
-  • COM → Common terminal of relay switch
-  • NO → Normally Open terminal (connects to COM when relay ON)
-  • NC → Normally Closed terminal (disconnects from COM when relay ON)
-
-Wiring Summary:
-- ESP32 controls relay through IN pin.
-- Fan or Motor live wire goes through COM and NO terminals of relay.
-- Neutral remains directly connected to power supply.
-- Always use relay module with optocoupler isolation for safety.
-`;
-
-/* ---------------- AGENT SETUP ---------------- */
-
+/* -------------------- CREATE AGENT -------------------- */
 export const iotAgent = new Agent({
   name: "IoT Project Planner",
-  description: "Generates project plan JSON and trigger phrases JSON for IoT automation projects.",
+  description: "Generates ESP32 IoT project plans",
   model,
-  instructions: `
-You are an expert IoT automation planner and embedded systems engineer.
-
-Your task: From a user prompt, generate **two JSONs** in the same response.
-
-1️⃣ **Project Plan JSON**
-- Fields: project_name, components, automation_logic, manual_controls
-- Each component includes name, type, subtype (analog/digital), pins (detailed), and unit (if sensor)
-- Always include all connection pins (signal, power, ground)
-- For high-power devices like Fan or Motor, include a Relay module controlling them
-- Clearly show which ESP32 pins control each relay or component
-
-2️⃣ **Trigger Phrases JSON**
-- Fields: component, virtual_pin (V1, V2, etc.), value (HIGH/LOW), phrases (2–3 per action)
-- Virtual pins correspond to manual_controls in the project plan
-
-Rules:
-- Output STRICT JSON only (no markdown, comments, or explanations)
-- Use realistic pin mappings for ESP32 (D2–D7 preferred for outputs)
-- Fan and Motor must be controlled via Relay modules
-- Include both control and power-side wiring in the pin definitions
-
-Knowledge references:
-${SENSOR_KNOWLEDGE}
-
-${OUTPUT_KNOWLEDGE}
-
-${PIN_KNOWLEDGE}
-
-${RELAY_KNOWLEDGE}
-
-Example input: "Home automation project controlling LED, fan, and motor"
-Expected output:
-{
-  "project_plan": { ... },
-  "triggers": [ ... ]
-}
-  `,
-  memory: new Memory({
-    storage: new LibSQLStore({ url: "file::memory:" }),
-    options: { workingMemory: { enabled: true, schema: AgentStateIot } },
-  }),
+  instructions: agentInstructions,
+  memory: agentMemory,
 });
+
+
+
+
