@@ -6,6 +6,7 @@
 
 ## 🤖 AI Agents Overview
 
+
 This project leverages three specialized AI agents to handle different aspects of IoT project creation and management:
 
 ### 1. Project Planner Agent
@@ -86,7 +87,7 @@ docker push yourusername/agent-challenge:latest
   ```
 - Submit job and monitor deployment
 
-![Nosana Deployment](./assets/dashboard.png)
+![Nosana Deployment](./assets/nosana_dashboard.png)
 
 ## 🎥 Video Overview
 
@@ -103,7 +104,7 @@ The project demo video covers:
    - Live deployment demonstration
 
 ## 🔗 Links
-- [Twitter Demo](https://twitter.com/YOUR_HANDLE)
+- [Twitter Demo](https://x.com/bharathms443/status/1984406587096580468)
 - [Nosana Dashboard ](https://dashboard.nosana.com/jobs/EXEk74jc2azchXnteyxRKeKS1RVsGH6BEG1pZLCDZ5SC)
 - [Docker Image](https://hub.docker.com/r/akashgoundi100/iot_automation)
 
