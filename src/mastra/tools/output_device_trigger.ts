@@ -1,84 +1,89 @@
-import { createTool } from '@mastra/core/tools';
-import { z } from 'zod';
-import mqtt from 'mqtt';
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import mqtt from "mqtt";
 
-export const MQTTPinToolResultSchema = z.object({
-  topic: z.string(),
-  pin: z.string(),
-  state: z.boolean(),
-  status: z.string(), // "activated" or "device offline"
-});
+const mqtt_broker = "mqtt://localhost:1883"; // Change to your MQTT broker address
 
-export type MQTTPinToolResult = z.infer<typeof MQTTPinToolResultSchema>;
-
-export const PinControlTool = createTool({
-  id: 'pin-control',
-  description: 'controll the esp32 output device',
+export const trigger = createTool({
+  id: "trigger",
+  description: "A tool that triggers an action in esp32",
   inputSchema: z.object({
-    projectId: z.string().describe('Project ID'),
-    pin: z.string().describe('Pin name '),
-    state: z.boolean().describe('Pin state '),
-    brokerUrl: z.string().default('mqtt://localhost:1883').describe('MQTT broker URL'),
-    timeout: z.number().default(5000).describe('Time to wait for ack (ms)'),
+    mqtt_topic: z.string(),
+    ack_topic: z.string(),
+    msg: z.string(),
   }),
-
-
-  outputSchema: MQTTPinToolResultSchema,
-
-  
+  outputSchema: z.object({
+    success: z.boolean(),
+  }),
   execute: async ({ context }) => {
-    const { projectId, pin, state, brokerUrl, timeout } = context;
-    const publishTopic = `${projectId}/${pin}`;
-    const ackTopic = `${projectId}/${pin}/ack`;
-    const message = JSON.stringify({ pin, state });
+    const { mqtt_topic, ack_topic, msg } = context;
 
-    return new Promise<MQTTPinToolResult>((resolve, reject) => {
-      const client = mqtt.connect(brokerUrl);
-      let timeoutHandler: NodeJS.Timeout;
+    return new Promise((resolve) => {
+      const client = mqtt.connect(mqtt_broker);
+      let ackReceived = false;
 
-      client.on('connect', () => {
-        // Subscribe to ack topic
-        client.subscribe(ackTopic, (err) => {
-          if (err) {
-            client.end();
-            return reject(err);
-          }
-
-          // Publish the pin state
-          client.publish(publishTopic, message, (err) => {
-            if (err) {
+      client.on("connect", () => {
+        // First, publish the message
+        client.publish(mqtt_topic, msg, {}, (err) => {
+          // Then subscribe to the ACK topic
+          client.subscribe(ack_topic, (subscribeErr) => {
+            if (err || subscribeErr) {
               client.end();
-              return reject(err);
+              resolve({ success: false });
             }
-
-            // Timeout in case device doesn't respond
-            timeoutHandler = setTimeout(() => {
-              client.end();
-              resolve({ topic: publishTopic, pin, state, status: 'device offline' });
-            }, timeout);
           });
         });
-      });
 
-      client.on('message', (recvTopic, payload) => {
-        if (recvTopic === ackTopic) {
-          try {
-            const data = JSON.parse(payload.toString());
-            // Optional: verify pin/state in ack if needed
-            clearTimeout(timeoutHandler);
+        // Wait for ACK from the specified topic
+        client.on("message", (topic, message) => {
+          if (topic === ack_topic) {
+            ackReceived = true;
+            clearTimeout(timeout);
             client.end();
-            resolve({ topic: publishTopic, pin, state, status: 'activated' });
-          } catch {
-            // Ignore invalid JSON
+            resolve({ success: true });
           }
-        }
+        });
+
+        // Set a timeout for waiting ACK (4 seconds)
+        const timeout = setTimeout(() => {
+          if (!ackReceived) {
+            client.end();
+            resolve({ success: false });
+          }
+        }, 4000);
       });
 
-      client.on('error', (err) => {
-        clearTimeout(timeoutHandler);
+      client.on("error", () => {
         client.end();
-        reject(err);
+        resolve({ success: false });
       });
     });
   },
 });
+
+
+
+(async()=>{
+
+  const client = mqtt.connect(mqtt_broker);
+
+  client.on("connect", () => {
+    console.log("MQTT Test Client connected");
+
+    client.subscribe("hello",(err)=>{
+      if(err){
+        console.error("Subscription error:", err);
+      }
+
+      console.log("Subscribed to 'hello' topic");
+    })
+  });
+
+  client.on("message", (topic, message) => {
+    console.log(`Received message on topic ${topic}: ${message.toString()}`);
+
+    client.publish("hello2", "ACK from test client");
+  });
+
+
+})();

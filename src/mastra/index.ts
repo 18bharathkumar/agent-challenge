@@ -1,6 +1,6 @@
 import { Mastra } from "@mastra/core/mastra";
 import { LibSQLStore } from "@mastra/libsql";
-import {iotAgent} from "./agents";
+import {iotAgent,trigger_agent,esp32_code_generator_agent} from "./agents";
 import { ConsoleLogger, LogLevel } from "@mastra/core/logger";
 
 import { server } from "./mcp";
@@ -10,7 +10,9 @@ const LOG_LEVEL = process.env.LOG_LEVEL as LogLevel || "info";
 
 export const mastra = new Mastra({
   agents: {
-    iotAgent
+    iotAgent,
+    trigger_agent,
+    esp32_code_generator_agent
   },
 
   mcpServers: {

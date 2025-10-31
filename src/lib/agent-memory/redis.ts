@@ -1,5 +1,5 @@
 import Redis from "ioredis";
-import { Component } from "../types/iot-component";
+import { Component } from "../types/iot-project";
 
 export const redis = new Redis({ host: "127.0.0.1", port: 6379 });
 

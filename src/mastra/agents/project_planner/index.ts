@@ -121,7 +121,7 @@ Output:
   "title": "Smart Room Lighting System",
   "components": [
     {
-      "id": "ldr_room",
+      "id": "ldr sensor",
       "description": "LDR light sensor for room brightness detection",
       "component_type": "sensor",
       "subtype": "analog",
@@ -253,6 +253,9 @@ export const iotAgent = new Agent({
   instructions: agentInstructions,
   memory: agentMemory,
 });
+
+
+
 
 
 

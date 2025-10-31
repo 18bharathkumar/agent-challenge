@@ -1,95 +1,54 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import ProjectCard from "../components/ProjectCard";
-import CreateProjectForm from "../components/CreateProjectForm";
+import { useRouter } from "next/navigation";
+import LandingHeader from "@/components/LandingHeader";
+import ProjectCardLanding from "@/components/ProjectCardLanding";
 
-type Project = {
-  id: string;
-  title: string;
-  components: any[];
-  outputs: any[];
-};
-
-export default function HomePage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  // no inline chat; navigation opens project page
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    async function fetchProjects() {
+      const res = await fetch("/api/projects");
+      const data = await res.json();
+      setProjects(data.projects || []);
+      setLoading(false);
+    }
     fetchProjects();
   }, []);
 
-  async function fetchProjects() {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/projects");
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      const data = await res.json();
-      setProjects(data);
-    } catch (err: any) {
-      setError(String(err.message ?? err));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function onCreated(p: Project) {
-    setProjects((s) => [p, ...s]);
-  }
-
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 to-sky-900 text-slate-100 p-8">
-      <div className="max-w-6xl mx-auto">
-        <header className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-extrabold">IoT Projects</h1>
-            <p className="text-slate-300 mt-1">Manage your IoT projects — view, create, and chat with your IoT agent.</p>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 to-sky-900 text-slate-100 flex flex-col items-center">
+      <LandingHeader />
+      <section className="w-full max-w-6xl mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold text-sky-300 mb-8 text-center animate-slide-in">Your Projects</h2>
+        <div className="flex justify-end mb-8">
+          <button
+            onClick={() => router.push("/create_project")}
+            className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-6 py-2 rounded-full shadow transition-transform hover:scale-105"
+          >
+            + Create Project
+          </button>
+        </div>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16 animate-pulse">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-slate-700 mb-4" />
+            <div className="h-4 w-48 bg-slate-700 rounded mb-2" />
+            <div className="h-4 w-32 bg-sky-500 rounded" />
+            <div className="mt-4 text-slate-300 text-lg">Loading projects...</div>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-md text-sm"
-              onClick={() => fetchProjects()}
-            >
-              Refresh
-            </button>
-            <button
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-md text-sm shadow"
-              onClick={() => {
-                const el = document.getElementById("create-project");
-                el?.scrollIntoView({ behavior: "smooth", block: "center" });
-              }}
-            >
-              + Create Project
-            </button>
+        ) : projects.length === 0 ? (
+          <div className="bg-white/10 p-8 rounded-xl text-center text-slate-300 shadow-md">No projects yet. Create your first project to get started!</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((proj) => (
+              <ProjectCardLanding key={proj.id} project={proj} onClick={() => router.push(`/${proj.id}`)} />
+            ))}
           </div>
-        </header>
-
-        <section id="create-project" className="mb-8">
-          <CreateProjectForm onCreated={onCreated} />
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-bold mb-4">Projects</h2>
-          {loading ? (
-            <div className="text-slate-300">Loading projects...</div>
-          ) : projects.length === 0 ? (
-            <div className="bg-white/5 p-6 rounded-md">No projects yet — create one above.</div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projects.map((p) => (
-                  <ProjectCard key={p.id} project={p} />
-                ))}
-            </div>
-          )}
-        </section>
-        
-      </div>
+        )}
+      </section>
     </main>
   );
 }
-
-
-

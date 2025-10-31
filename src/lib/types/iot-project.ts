@@ -18,9 +18,9 @@ const ComponentSchema = z.object({
 // Defines what values can be published/sent to topics (ONLY FOR SENSORS)
 const OutputSchema = z.object({
   name: z.string(),
-  value: z.union([z.string(), z.number()]),
-  publish_topic: z.string(),
-  component_id: z.string(), // Link output to its source component
+  mqtt_topic: z.string(),
+  component_id: z.string(), 
+  unit:z.string()
 });
 
 // Describes what action to take when a trigger occurs
@@ -34,7 +34,7 @@ const ActionSchema = z.object({
 const TriggerSchema = z.object({
   id: z.string(),
   phrases: z.array(z.string()),
-  mqtt: z.string(), // Topic where command (0 or 1) is published
+  mqtt_topic: z.string(), // Topic where command (0 or 1) is published
   action: ActionSchema,
   ackTopic: z.string(), // Topic where ESP32 publishes acknowledgment
 });
@@ -58,7 +58,9 @@ export const IotProjectSchema = z.object({
 });
 
 /* -------------------- EXPORT TYPES -------------------- */
-export type IotProject = z.infer<typeof IotProjectSchema>;
+export type IotProject = z.infer<typeof IotProjectSchema> & {
+  code: string;
+};
 export type Component = z.infer<typeof ComponentSchema>;
 export type Trigger = z.infer<typeof TriggerSchema>;
 export type Automation = z.infer<typeof AutomationSchema>;

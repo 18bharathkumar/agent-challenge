@@ -1,7 +1,7 @@
 // updateComponentRuntime.ts
 import { updateComponent, fetchComponents } from "./redis"
 import { agentMemory } from "@/mastra/agents/project_planner";
-import { Component } from "../types/iot-component";
+import { Component } from "../types/iot-project";
 
 export async function addOrUpdateComponent(newComponent: Component) {
     // Update Redis first
