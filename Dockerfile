@@ -1,52 +1,52 @@
 # syntax=docker/dockerfile:1
 
-FROM node:lts AS build
-
-RUN corepack enable
-
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
-# Disable Analytics/Telemetry
-ENV DISABLE_TELEMETRY=true
-ENV POSTHOG_DISABLED=true
-ENV MASTRA_TELEMETRY_DISABLED=true
-ENV DO_NOT_TRACK=1
-
-# Ensure logs are visible (disable buffering)
-ENV PYTHONUNBUFFERED=1
+############################
+# Stage 1: Build with Bun
+############################
+FROM oven/bun:1 AS build
 
 WORKDIR /app
-
-COPY pnpm-lock.yaml ./
-
-RUN --mount=type=cache,target=/pnpm/store \
-  pnpm fetch --frozen-lockfile
 
 COPY package.json ./
 
-RUN --mount=type=cache,target=/pnpm/store \
-  pnpm install --frozen-lockfile --prod --offline
+RUN bun install
 
+# Copy source code
 COPY . .
 
-RUN pnpm build
+# Build the frontend/backend (if applicable)
+RUN bun install
 
-FROM node:lts AS runtime
+############################
+# Stage 2: Runtime with Redis & MQTT Broker
+############################
+FROM oven/bun:1 AS runtime
 
-RUN groupadd -g 1001 appgroup && \
-  useradd -u 1001 -g appgroup -m -d /app -s /bin/false appuser
+# Install Mosquitto (MQTT broker) and Redis
+RUN apt-get update && apt-get install -y mosquitto redis-server && \
+    rm -rf /var/lib/apt/lists/*
+
+# Configure Mosquitto with WebSocket + TCP
+RUN mkdir -p /etc/mosquitto/conf.d
+COPY mosquitto.conf /etc/mosquitto/mosquitto.conf
+
+# Create app user
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
 WORKDIR /app
+COPY --from=build --chown=appuser:appgroup /app .
 
-COPY --from=build --chown=appuser:appgroup /app ./
-
-ENV NODE_ENV=production \
-  NODE_OPTIONS="--enable-source-maps"
-
+ENV NODE_ENV=production
 USER appuser
 
-EXPOSE 3000
-EXPOSE 4111
+# Expose ports
+# 3000 -> Bun app
+# 1883 -> MQTT (TCP)
+# 9001 -> MQTT (WebSocket)
+# 6379 -> Redis
+EXPOSE 3000 1883 9001 6379
 
-ENTRYPOINT ["npm", "start"]
+# Run all services: Redis, Mosquitto, and your Bun app
+CMD redis-server --daemonize yes && \
+    mosquitto -c /etc/mosquitto/mosquitto.conf -d && \
+    bun run dev:ui
