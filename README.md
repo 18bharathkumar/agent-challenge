@@ -1,7 +1,7 @@
 # ESP32 Project Generator & Control Platform
 > An AI-powered platform that helps you create, manage, and control ESP32 IoT projects using natural language.
 
-[![Video Demo](https://x.com/bharathms443/status/1984406587096580468)
+Video Demo(https://x.com/bharathms443/status/1984406587096580468)
 *Click to watch the demo video (7 min): 5 min project walkthrough + 2 min Nosana deployment*
 
 ## 🤖 AI Agents Overview
