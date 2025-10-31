@@ -44,27 +44,8 @@ export default function Page() {
       console.log("Project Planner Response:", data);
 
       if (data.msg === false && data.project) {
+        // store project in page state but do NOT add project details to chat
         setProject(data.project);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: (
-              <div>
-                <p>Here’s your project idea 👇</p>
-                <div className="mt-3">
-                  <ProjectIdeaCard project={data.project as IotProject} />
-                  <button
-                    className="mt-3 px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-                    onClick={generateCode}
-                  >
-                    ⚡ Generate ESP32 Code
-                  </button>
-                </div>
-              </div>
-            ),
-          },
-        ]);
       } else {
         setMessages((prev) => [
           ...prev,
@@ -112,29 +93,10 @@ export default function Page() {
       const data = await res.json();
       console.log("ESP32 Code Response:", data);
 
-      if (data.msg === false && data.code) {
-        setCode(data.code);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: (
-              <div>
-                <p>Here’s the generated ESP32 code 👇</p>
-                <div className="bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl shadow border border-violet-200 p-4 overflow-x-auto text-xs mt-2">
-                  <pre className="bg-transparent text-violet-900 whitespace-pre-wrap">{data.code}</pre>
-                </div>
-                <button
-                  className="mt-3 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                  onClick={create_project}
-                >
-                  ✅ Create Project
-                </button>
-              </div>
-            ),
-          },
-        ]);
-      } else {
+        if (data.msg === false && data.code) {
+          // save generated code to state but do NOT add code details to chat
+          setCode(data.code);
+        } else {
         setMessages((prev) => [
           ...prev,
           {
@@ -208,6 +170,45 @@ export default function Page() {
       <p className="text-center text-gray-500 mt-2">
         Describe your IoT idea to automatically generate ESP32 projects and firmware.
       </p>
+
+      {/* External project / code panel (renders outside the chat) */}
+      {project && (
+        <div className="mt-6 max-w-3xl mx-auto p-4 bg-white rounded-xl shadow border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800">Project Idea</h2>
+          <div className="mt-3">
+            <ProjectIdeaCard project={project} />
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              onClick={generateCode}
+              disabled={codeLoading}
+              className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+            >
+              ⚡ Generate ESP32 Code
+            </button>
+
+            {code && (
+              <button
+                onClick={create_project}
+                className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                ✅ Create Project
+              </button>
+            )}
+          </div>
+
+          {code && (
+            <div className="bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl shadow border border-violet-200 p-4 overflow-x-auto text-xs mt-4">
+              <pre className="bg-transparent text-violet-900 whitespace-pre-wrap">{code}</pre>
+            </div>
+          )}
+
+          {successMessage && (
+            <p className="mt-2 text-green-700 font-semibold">{successMessage}</p>
+          )}
+        </div>
+      )}
 
       {/* Floating Chat Icon */}
       <ChatIconButton onClick={() => setShowChat(true)} />

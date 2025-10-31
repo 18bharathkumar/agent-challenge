@@ -28,7 +28,7 @@ export default function OutputList({ outputs, outputValues, onVoiceTrigger }: { 
   return (
     <div className="grid gap-6">
       {outputs.map((out) => (
-        <div key={out.mqtt_topic} className="bg-gradient-to-br from-sky-50 to-sky-200 rounded-xl shadow-lg border border-sky-300 p-6 flex flex-col gap-2">
+        <div key={out.component_id} className="bg-gradient-to-br from-sky-50 to-sky-200 rounded-xl shadow-lg border border-sky-300 p-6 flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="font-bold text-sky-700 text-lg">{out.name}</span>
             <button
@@ -41,8 +41,8 @@ export default function OutputList({ outputs, outputValues, onVoiceTrigger }: { 
             </button>
           </div>
           <div className="flex gap-3 items-center">
-            <span className="font-mono text-xs text-slate-500">{out.mqtt_topic}</span>
-            <span className="ml-2 text-blue-700 font-medium">{outputValues[out.mqtt_topic] ?? "No value yet"}</span>
+            <span className="font-mono text-xs text-slate-500">{out.publish_topic}</span>
+            <span className="ml-2 text-blue-700 font-medium">{outputValues[out.publish_topic] ?? "No value yet"}</span>
             {out.unit && <span className="ml-2 text-xs text-slate-400">{out.unit}</span>}
           </div>
         </div>
