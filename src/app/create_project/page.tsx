@@ -93,10 +93,10 @@ export default function Page() {
       const data = await res.json();
       console.log("ESP32 Code Response:", data);
 
-        if (data.msg === false && data.code) {
-          // save generated code to state but do NOT add code details to chat
-          setCode(data.code);
-        } else {
+      if (data.msg === false && data.code) {
+        // save generated code to state but do NOT add code details to chat
+        setCode(data.code);
+      } else {
         setMessages((prev) => [
           ...prev,
           {
@@ -125,6 +125,8 @@ export default function Page() {
   // Create project
   const create_project = async () => {
     if (!project || !code.trim()) return alert("Project or code missing!");
+
+
 
     const projectWithCode: IotProject = { ...project, code };
 
@@ -234,16 +236,14 @@ export default function Page() {
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`flex ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}
               >
                 <div
-                  className={`px-3 py-2 rounded-2xl max-w-[80%] ${
-                    msg.role === "user"
+                  className={`px-3 py-2 rounded-2xl max-w-[80%] ${msg.role === "user"
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 text-gray-800"
-                  }`}
+                    }`}
                 >
                   {msg.content}
                 </div>

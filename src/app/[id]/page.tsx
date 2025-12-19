@@ -83,12 +83,14 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
         });
         const data = await res.json();
         const proj = data.projects?.find((p: any) => p.id === id);
+
+        console.log("Parsed Project Data:", proj);
         setProject(proj);
 
         // Setup MQTT client if project outputs exist
         if (proj && proj.outputs?.length > 0) {
           const brokerUrl = process.env.NEXT_PUBLIC_MQTT_URL || "ws://localhost:9001";
-          
+
           try {
             mqttClient = mqtt.connect(brokerUrl, {
               reconnectPeriod: 0, // Disable auto-reconnect
@@ -190,7 +192,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
       <h1 className="text-3xl font-bold text-blue-600 mb-4">{project.title}</h1>
       <p className="text-gray-600 mb-6">{project.description}</p>
 
-     
+
 
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 mb-8">
         <OutputList outputs={project.outputs} outputValues={outputValues} />
@@ -224,11 +226,10 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
               {messages.map((msg, i) => (
                 <div key={i} className={`mb-3 ${msg.role === "user" ? "text-right" : "text-left"}`}>
                   <div
-                    className={`inline-block px-4 py-2 rounded-2xl ${
-                      msg.role === "user"
+                    className={`inline-block px-4 py-2 rounded-2xl ${msg.role === "user"
                         ? "bg-blue-500 text-white"
                         : "bg-gray-200 text-gray-800"
-                    }`}
+                      }`}
                   >
                     {msg.text}
                   </div>
@@ -249,9 +250,8 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
               <button
                 type="button"
                 onClick={startListening}
-                className={`p-3 rounded-full transition ${
-                  listening ? "bg-red-500 animate-pulse" : "bg-gray-200 hover:bg-gray-300"
-                }`}
+                className={`p-3 rounded-full transition ${listening ? "bg-red-500 animate-pulse" : "bg-gray-200 hover:bg-gray-300"
+                  }`}
                 title="Start voice input"
               >
                 <Mic className={`w-5 h-5 ${listening ? "text-white" : "text-gray-700"}`} />
@@ -270,7 +270,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
         )}
       </AnimatePresence>
 
-       {/* ✅ Display Project Code Section */}
+      {/* ✅ Display Project Code Section */}
       {project.code && (
         <div className="bg-gray-900 text-gray-100 p-4 rounded-xl shadow-md mb-8 overflow-x-auto">
           <div className="flex justify-between items-center mb-4">

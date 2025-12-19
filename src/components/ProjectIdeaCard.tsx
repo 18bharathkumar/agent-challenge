@@ -40,7 +40,7 @@ export default function ProjectIdeaCard({ project }: { project: IotProject }) {
               <div key={i} className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl shadow border border-orange-200 p-4">
                 <div className="font-bold text-orange-700 text-lg mb-1">{o.name}</div>
                 <div className="text-xs text-slate-500 mb-1">Unit: {o.unit || "no unit"}</div>
-                <div className="text-xs text-slate-500 mb-1">MQTT Topic: {o.mqtt_topic}</div>
+                <div className="text-xs text-slate-500 mb-1">MQTT Topic: {o.publish_topic}</div>
                 <div className="text-xs text-slate-500">Component: {o.component_id}</div>
               </div>
             )) : <div className="text-slate-400">No outputs</div>}
@@ -55,7 +55,7 @@ export default function ProjectIdeaCard({ project }: { project: IotProject }) {
               <div key={i} className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow border border-green-200 p-4">
                 <div className="font-bold text-green-700 text-lg mb-1">{t.id}</div>
                 <div className="text-xs text-slate-500 mb-1">Phrases: {t.phrases.join(", ")}</div>
-                <div className="text-xs text-slate-500 mb-1">MQTT Topic: {t.mqtt_topic}</div>
+                <div className="text-xs text-slate-500 mb-1">MQTT Topic: {t.mqtt}</div>
                 <div className="text-xs text-green-500 mb-1">Ack Topic: {t.ackTopic}</div>
                 <div className="text-xs text-green-700">Action: {t.action.component_id} pin {t.action.pin} → {String(t.action.value)}</div>
               </div>

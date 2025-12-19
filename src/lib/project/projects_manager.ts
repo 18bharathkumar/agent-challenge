@@ -11,9 +11,9 @@ export const createProject = async (
   try {
     const projectData = data as IotProjectType;
 
-    
 
-    if(!projectData.id || !projectData.title || !projectData.outputs || !projectData.components || !projectData.code){
+
+    if (!projectData.id || !projectData.title || !projectData.outputs || !projectData.components || !projectData.code) {
       return {
         error: "Validation failed for IoTProject data",
         issues: "Missing required fields: id, title, components, outputs, or code",
@@ -27,10 +27,11 @@ export const createProject = async (
       outputs: projectData.outputs,
       components: projectData.components,
       triggers: projectData.triggers ?? [],
-      code:projectData.code??'',
+      code: projectData.code ?? '',
+      automations: projectData.automations ?? [],
     });
 
-    console.log("project:",JSON.stringify(project))
+    console.log("project:", JSON.stringify(project))
 
     // ✅ Store project data in Redis (serialize it)
     await redis.set(`project:${project.id}`, JSON.stringify(project));
