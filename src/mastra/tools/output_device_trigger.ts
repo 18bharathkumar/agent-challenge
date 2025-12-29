@@ -60,30 +60,3 @@ export const trigger = createTool({
     });
   },
 });
-
-
-
-(async()=>{
-
-  const client = mqtt.connect(mqtt_broker);
-
-  client.on("connect", () => {
-    console.log("MQTT Test Client connected");
-
-    client.subscribe("hello",(err)=>{
-      if(err){
-        console.error("Subscription error:", err);
-      }
-
-      console.log("Subscribed to 'hello' topic");
-    })
-  });
-
-  client.on("message", (topic, message) => {
-    console.log(`Received message on topic ${topic}: ${message.toString()}`);
-
-    client.publish("hello2", "ACK from test client");
-  });
-
-
-})();
