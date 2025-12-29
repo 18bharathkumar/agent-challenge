@@ -41,8 +41,8 @@ export default function OutputList({ outputs, outputValues, onVoiceTrigger }: { 
             </button>
           </div>
           <div className="flex gap-3 items-center">
-            <span className="font-mono text-xs text-slate-500">{out.publish_topic}</span>
-            <span className="ml-2 text-blue-700 font-medium">{outputValues[out.publish_topic] ?? "No value yet"}</span>
+            <span className="font-mono text-xs text-slate-500">{out.mqtt_topic}</span>
+            <span className="ml-2 text-blue-700 font-medium">{outputValues[out.mqtt_topic] ?? "No value yet"}</span>
             {out.unit && <span className="ml-2 text-xs text-slate-400">{out.unit}</span>}
           </div>
         </div>

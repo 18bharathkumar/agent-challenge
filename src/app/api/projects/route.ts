@@ -27,3 +27,35 @@ export async function GET() {
   }
 }
 
+// DELETE → Remove a project by ID
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const projectId = searchParams.get("id");
+
+    if (!projectId) {
+      return NextResponse.json(
+        { success: false, error: "Project ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Remove project data from Redis
+    await redis.del(`project:${projectId}`);
+
+    // Remove project ID from the set
+    await redis.srem(PROJECT_SET_KEY, projectId);
+
+    return NextResponse.json({
+      success: true,
+      message: "Project deleted successfully"
+    });
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to delete project" },
+      { status: 500 }
+    );
+  }
+}
+
